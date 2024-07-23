@@ -1,0 +1,42 @@
+<%@ taglib uri="http://jakarta.ee/jsp/jstl/core" prefix="c" %>
+<%@ include file="../includes/header.jsp" %>
+<main>
+    <h2>Order Details</h2>
+    
+    <!-- Order Summary Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <c:forEach var="item" items="${cartItems}">
+                <tr>
+                    <td>${item.product.id}</td>
+                    <td>${item.product.name}</td>
+                    <td>${item.product.price}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.product.price * item.quantity}</td>
+                </tr>
+            </c:forEach>
+        </tbody>
+    </table>
+
+    <!-- Order Form -->
+    <form action="${pageContext.request.contextPath}/place-order" method="post">
+        <h3>Shipping Information</h3>
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" rows="4" required></textarea>
+        
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" required>
+        
+        <button type="submit">Place Order</button>
+    </form>
+</main>
+<%@ include file="../includes/footer.jsp" %>

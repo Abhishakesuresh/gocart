@@ -1,0 +1,11 @@
+<%@ taglib uri="http://jakarta.ee/jsp/jstl/core" prefix="c" %>
+<%@ include file="../includes/header.jsp" %>
+<main>
+    <h2>Delete Product</h2>
+    <p>Are you sure you want to delete the product with ID: ${product.id}?</p>
+    <form action="${pageContext.request.contextPath}/admin/delete-product" method="post">
+        <input type="hidden" name="id" value="${product.id}">
+        <button type="submit">Delete</button>
+    </form>
+</main>
+<%@ include file="../includes/footer.jsp" %>

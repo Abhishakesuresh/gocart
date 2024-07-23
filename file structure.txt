@@ -1,0 +1,55 @@
+GoCart
+├── src
+│   └── main
+│       ├── java
+│       │   └── gocart
+│       │       ├── dao
+│       │       │   ├── DBConnection.java
+│       │       │   ├── UserDAO.java
+│       │       │   ├── ProductDAO.java
+│       │       │   ├── OrderDAO.java
+│       │       │   ├── InquiryDAO.java
+│       │       ├── model
+│       │       │   ├── User.java
+│       │       │   ├── Product.java
+│       │       │   ├── Order.java
+│       │       │   ├── Inquiry.java
+│       │       ├── servlets
+│       │       │   ├── LoginServlet.java
+│       │       │   ├── SignupServlet.java
+│       │       │   ├── LogoutServlet.java
+│       │       │   ├── AdminServlet.java
+│       │       │   ├── UserServlet.java
+│       │       │   ├── ProductServlet.java
+│       │       │   ├── OrderServlet.java
+│       │       │   ├── InquiryServlet.java
+│       │       └── util
+│       │           └── PasswordUtil.java
+│       ├── resources
+│       └── webapp
+│           ├── WEB-INF
+│           │   ├── web.xml
+│           ├── css
+│           │   └── styles.css
+│           ├── js
+│           │   └── scripts.js
+│           ├── images
+│           └── jsp
+│               ├── includes
+│               │   ├── header.jsp
+│               │   ├── footer.jsp
+│               ├── login.jsp
+│               ├── signup.jsp
+│               ├── admin
+│               │   ├── admin-products.jsp
+│               │   ├── admin-add-product.jsp
+│               │   ├── admin-update-product.jsp
+│               │   ├── admin-delete-product.jsp
+│               │   ├── admin-enquiries.jsp
+│               ├── user
+│               │   ├── user-profile.jsp
+│               │   ├── products.jsp
+│               │   ├── order.jsp
+│               │   ├── inquiry.jsp
+│               └── cart.jsp
+└── pom.xml (if needed for Maven)

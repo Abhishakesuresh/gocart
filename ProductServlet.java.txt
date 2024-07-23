@@ -1,0 +1,45 @@
+package gocart.servlets;
+
+import gocart.dao.ProductDAO;
+import gocart.model.Cart;
+import gocart.model.Product;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+
+@WebServlet("/product")
+public class ProductServlet extends HttpServlet {
+    private ProductDAO productDAO = new ProductDAO();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int productId = Integer.parseInt(req.getParameter("productId"));
+        Product product = productDAO.getAllProducts().stream().filter(p -> p.getId() == productId).findFirst().orElse(null);
+        req.setAttribute("product", product);
+        req.getRequestDispatcher("product.jsp").forward(req, resp);
+    }
+    
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        Cart cart = (Cart) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new Cart();
+            session.setAttribute("cart", cart);
+        }
+
+        int productId = Integer.parseInt(req.getParameter("productId"));
+        int quantity = Integer.parseInt(req.getParameter("quantity"));
+
+        cart.addProduct(productId, quantity);
+        productDAO.reduceStock(productId, quantity);
+
+        req.setAttribute("cart", cart);
+        req.getRequestDispatcher("cart.jsp").forward(req, resp);
+    }
+}

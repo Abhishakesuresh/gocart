@@ -1,0 +1,30 @@
+package gocart.model;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Cart {
+    private Map<Integer, Integer> products;
+
+    public Cart() {
+        products = new HashMap<>();
+    }
+
+    public void addProduct(int productId, int quantity) {
+        products.put(productId, quantity);
+    }
+
+    public void updateProductQuantity(int productId, int quantity) {
+        if (products.containsKey(productId)) {
+            products.put(productId, quantity);
+        }
+    }
+
+    public void removeProduct(int productId) {
+        products.remove(productId);
+    }
+
+    public Map<Integer, Integer> getProducts() {
+        return products;
+    }
+}

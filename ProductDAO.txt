@@ -1,0 +1,124 @@
+package gocart.dao;
+
+import gocart.model.Product;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProductDAO {
+
+    public void addProduct(Product product) {
+        Connection connection = DBConnection.getConnection();
+        try {
+            String sql = "INSERT INTO products (name, description, price, serial_number, stock, image_url) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, product.getName());
+            stmt.setString(2, product.getDescription());
+            stmt.setDouble(3, product.getPrice());
+            stmt.setString(4, product.getSerialNumber());
+            stmt.setInt(5, product.getStock());
+            stmt.setString(6, product.getImageUrl());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(connection);
+        }
+    }
+
+    public void updateProduct(Product product) {
+        Connection connection = DBConnection.getConnection();
+        try {
+            String sql = "UPDATE products SET name = ?, description = ?, price = ?, serial_number = ?, stock = ?, image_url = ? WHERE id = ?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, product.getName());
+            stmt.setString(2, product.getDescription());
+            stmt.setDouble(3, product.getPrice());
+            stmt.setString(4, product.getSerialNumber());
+            stmt.setInt(5, product.getStock());
+            stmt.setString(6, product.getImageUrl());
+            stmt.setInt(7, product.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(connection);
+        }
+    }
+
+    public void deleteProduct(int productId) {
+        Connection connection = DBConnection.getConnection();
+        try {
+            String sql = "DELETE FROM products WHERE id = ?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, productId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(connection);
+        }
+    }
+
+    public List<Product> getAllProducts() {
+        List<Product> products = new ArrayList<>();
+        Connection connection = DBConnection.getConnection();
+        try {
+            String sql = "SELECT * FROM products";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Product product = new Product();
+                product.setId(rs.getInt("id"));
+                product.setName(rs.getString("name"));
+                product.setDescription(rs.getString("description"));
+                product.setPrice(rs.getDouble("price"));
+                product.setSerialNumber(rs.getString("serial_number"));
+                product.setStock(rs.getInt("stock"));
+                product.setImageUrl(rs.getString("image_url"));
+                products.add(product);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(connection);
+        }
+        return products;
+    }
+
+    public void reduceStock(int productId, int quantity) {
+        Connection connection = DBConnection.getConnection();
+        try {
+            String sql = "UPDATE products SET stock = stock - ? WHERE id = ?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, quantity);
+            stmt.setInt(2, productId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(connection);
+        }
+    }
+
+    public boolean isProductExists(String serialNumber) {
+        Connection connection = DBConnection.getConnection();
+        try {
+            String sql = "SELECT COUNT(*) FROM products WHERE serial_number = ?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, serialNumber);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(connection);
+        }
+        return false;
+    }
+}

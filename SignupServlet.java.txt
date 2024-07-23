@@ -1,0 +1,41 @@
+package gocart.servlets;
+
+import gocart.dao.UserDAO;
+import gocart.model.User;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+@WebServlet("/signup")
+public class SignupServlet extends HttpServlet {
+    private UserDAO userDAO = new UserDAO();
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+        String email = req.getParameter("email");
+        String address = req.getParameter("address");
+        String phone = req.getParameter("phone");
+        
+        if (userDAO.isUserExists(username)) {
+            req.setAttribute("errorMessage", "Username already exists.");
+            req.getRequestDispatcher("signup.jsp").forward(req, resp);
+            return;
+        }
+        
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.setAddress(address);
+        user.setPhone(phone);
+        userDAO.addUser(user);
+        
+        resp.sendRedirect("login.jsp");
+    }
+}

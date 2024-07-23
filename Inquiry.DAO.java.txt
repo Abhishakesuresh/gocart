@@ -1,0 +1,49 @@
+package gocart.dao;
+
+import gocart.model.Inquiry;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class InquiryDAO {
+
+    public void addInquiry(Inquiry inquiry) {
+        Connection connection = DBConnection.getConnection();
+        try {
+            String sql = "INSERT INTO inquiries (user_id, message) VALUES (?, ?)";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setInt(1, inquiry.getUserId());
+            stmt.setString(2, inquiry.getMessage());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(connection);
+        }
+    }
+
+    public List<Inquiry> getAllInquiries() {
+        List<Inquiry> inquiries = new ArrayList<>();
+        Connection connection = DBConnection.getConnection();
+        try {
+            String sql = "SELECT * FROM inquiries";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Inquiry inquiry = new Inquiry();
+                inquiry.setId(rs.getInt("id"));
+                inquiry.setUserId(rs.getInt("user_id"));
+                inquiry.setMessage(rs.getString("message"));
+                inquiries.add(inquiry);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBConnection.closeConnection(connection);
+        }
+        return inquiries;
+    }
+}

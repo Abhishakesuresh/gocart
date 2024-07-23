@@ -1,0 +1,78 @@
+package gocart.servlets;
+
+import gocart.dao.ProductDAO;
+import gocart.model.Product;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+package gocart.servlets;
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import jakarta.servlet.annotation.*;
+
+import java.io.IOException;
+
+@WebServlet("/admin")
+public class AdminServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            User user = (User) session.getAttribute("user");
+            if (user != null && user.getRole().equals("admin")) {
+                RequestDispatcher dispatcher = request.getRequestDispatcher("admin.jsp");
+                dispatcher.forward(request, response);
+            } else {
+                response.sendRedirect("login.jsp"); // Redirect to login if not admin
+            }
+        } else {
+            response.sendRedirect("login.jsp"); // Redirect to login if not logged in
+        }
+    }
+}
+
+
+@WebServlet("/admin")
+public class AdminServlet extends HttpServlet {
+    private ProductDAO productDAO = new ProductDAO();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setAttribute("products", productDAO.getAllProducts());
+        req.getRequestDispatcher("admin.jsp").forward(req, resp);
+    }
+    
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String action = req.getParameter("action");
+        if ("delete".equals(action)) {
+            int productId = Integer.parseInt(req.getParameter("productId"));
+            productDAO.deleteProduct(productId);
+        } else if ("update".equals(action)) {
+            int productId = Integer.parseInt(req.getParameter("productId"));
+            String name = req.getParameter("name");
+            String description = req.getParameter("description");
+            double price = Double.parseDouble(req.getParameter("price"));
+            String serialNumber = req.getParameter("serialNumber");
+            int stock = Integer.parseInt(req.getParameter("stock"));
+            String imageUrl = req.getParameter("imageUrl");
+            
+            Product product = new Product();
+            product.setId(productId);
+            product.setName(name);
+            product.setDescription(description);
+            product.setPrice(price);
+            product.setSerialNumber(serialNumber);
+            product.setStock(stock);
+            product.setImageUrl(imageUrl);
+            productDAO.updateProduct(product);
+        }
+        resp.sendRedirect("admin");
+    }
+}

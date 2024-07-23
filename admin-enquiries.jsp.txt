@@ -1,0 +1,28 @@
+<%@ taglib uri="http://jakarta.ee/jsp/jstl/core" prefix="c" %>
+<%@ include file="../includes/header.jsp" %>
+<main>
+    <h2>Enquiries</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Message</th>
+                <th>Reply</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <c:forEach var="inquiry" items="${enquiries}">
+                <tr>
+                    <td>${inquiry.id}</td>
+                    <td>${inquiry.message}</td>
+                    <td>${inquiry.reply}</td>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/admin/reply-inquiry?id=${inquiry.id}">Reply</a>
+                    </td>
+                </tr>
+            </c:forEach>
+        </tbody>
+    </table>
+</main>
+<%@ include file="../includes/footer.jsp" %>

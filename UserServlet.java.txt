@@ -1,0 +1,42 @@
+package gocart.servlets;
+
+import gocart.dao.UserDAO;
+import gocart.model.User;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+
+@WebServlet("/user")
+public class UserServlet extends HttpServlet {
+    private UserDAO userDAO = new UserDAO();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("user");
+        req.setAttribute("user", user);
+        req.getRequestDispatcher("user.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("user");
+        
+        if (user != null) {
+            String address = req.getParameter("address");
+            String phone = req.getParameter("phone");
+            user.setAddress(address);
+            user.setPhone(phone);
+            userDAO.updateUser(user);
+            
+            session.setAttribute("user", user);
+            resp.sendRedirect("user.jsp");
+        }
+    }
+}
